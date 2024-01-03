@@ -16,3 +16,11 @@ export const getAllVideos = async()=>{
 export const deleteVideo = async(id)=>{
     return await commonAPI('DELETE',`${serverURL}/videos/${id}`,{})
 }
+
+// 4) add to watch history
+
+export const addToHistory = async(videoDetails)=>{
+    return await commonAPI('POST', `${serverURL}/history`,videoDetails)
+}
+
+// 5) get all watch history
