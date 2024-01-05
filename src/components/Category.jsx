@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import { addCategory, getAllCategory } from '../services/allAPI';
+import { addCategory, deleteCategory, getAllCategory } from '../services/allAPI';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -13,6 +13,7 @@ function Category() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [categoryName, setCategoryName] = useState()
+  const [allCategory, setAllCategory] = useState([])
   const handleAddCategory = async () => {
     if (categoryName) {
       let body = {
@@ -24,6 +25,7 @@ function Category() {
         toast.success(`sucessfully added the category${categoryName}`);
         setCategoryName("")
         handleClose();
+        getAllCat();
       }
       else {
         toast.error("Something went wrong")
@@ -39,15 +41,37 @@ function Category() {
     const {data} = response;
     console.log("====all categories===");
     console.log(response)
+    setAllCategory(data)
   }
   useEffect(() => {
     getAllCat();
   }, [])
-
+const handleDelete= async(id)=>{
+  await deleteCategory(id);
+  getAllCat();
+}
   return (
     <>
       <div>
         <button className='btn btn-warning' onClick={handleShow}>Add New Category</button>
+      </div>
+      <div className='ms-1'>
+        {
+          allCategory.length>0?
+          allCategory.map(item=>(
+            <div className='m-5 border border-secondary rounded p-3'>
+            <div className='d-flex justify-content-between align-items-center'>
+              <h6>{item.categoryName}</h6>
+              <button className='btn btn-danger ms-3' onClick={()=>handleDelete(item.id)}>
+              <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          ))
+         :
+        <p>No categories to display</p>
+        }
+      
       </div>
 
       <Modal
